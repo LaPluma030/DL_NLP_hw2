@@ -1,6 +1,6 @@
 if __name__ == '__main__':
     import warnings
-
+    from sklearn.ensemble import RandomForestClassifier
     warnings.filterwarnings("ignore")
     import gensim
     from pprint import pprint
@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
     test_corpus = [id2word.doc2bow(text) for text in test_texts]
 
-    lda_model = gensim.models.ldamodel.LdaModel(corpus=train_corpus, id2word=id2word, num_topics=10, random_state=100,
+    lda_model = gensim.models.ldamodel.LdaModel(corpus=train_corpus, id2word=id2word, num_topics=50, random_state=100,
                                                 update_every=1, chunksize=100, passes=10,
                                                 alpha='auto', per_word_topics=True)
 
@@ -189,15 +189,15 @@ if __name__ == '__main__':
     import pyLDAvis.gensim_models
 
 
-    vis = pyLDAvis.gensim_models.prepare(lda_model, train_corpus, id2word)
+    # vis = pyLDAvis.gensim_models.prepare(lda_model, train_corpus, id2word)
 
-    pyLDAvis.save_html(vis, 'lda_visualization1.html')
+    # pyLDAvis.save_html(vis, 'lda_visualization1.html')
 
     train_cla = []
     test_cla = []
     for i, item in enumerate(test_corpus):
         topic = lda_model.get_document_topics(item)
-        init = np.zeros(100)
+        init = np.zeros(1000)
         for i, v in topic:
             init[i] = v
         test_cla.append(init)
@@ -206,7 +206,7 @@ if __name__ == '__main__':
 
     for i, item in enumerate(train_corpus):
         topic = lda_model.get_document_topics(item)
-        init = np.zeros(100)
+        init = np.zeros(1000)
         for i, v in topic:
             init[i] = v
         train_cla.append(init)
@@ -216,6 +216,7 @@ if __name__ == '__main__':
     clf = SVC(C=0.4, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovr', degree=3, gamma='auto',
               kernel='poly', max_iter=- 1, probability=False, random_state=None, shrinking=True, tol=0.0000000001,
               verbose=False)
+    clf = SVC()
     # 可以根据前面介绍的参数，做出相应改变观察结果变化
     y = []
     x = train_cla
@@ -223,9 +224,9 @@ if __name__ == '__main__':
     truth = []
     for i in range(1000):
         if i < 900:
-            y.append(i // 90)
+            y.append(i // 180)
         else:
-            truth.append((i - 900) // 10)
+            truth.append((i - 900) // 20)
     clf.fit(x, y)
     print(y)
     pred = clf.predict(t).tolist()
@@ -239,6 +240,6 @@ if __name__ == '__main__':
     print(acc)
 
 
-    vis = pyLDAvis.gensim_models.prepare(lda_model, test_corpus, id2word)
+    # vis = pyLDAvis.gensim_models.prepare(lda_model, test_corpus, id2word)
 
-    pyLDAvis.save_html(vis, 'lda_visualization2.html')
+    # pyLDAvis.save_html(vis, 'lda_visualization2.html')
