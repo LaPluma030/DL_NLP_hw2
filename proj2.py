@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
 
     def not_empty(s):
-        return s and s.strip() and len(s) > 500
+        return s and s.strip() and len(s) > 200
 
 
     trainlist = []
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     selected_all = []
     for file in fileList:
         f = open(os.path.join(filePath, file), encoding='gb18030')
-        if file in ["倚天屠龙记.txt", "笑傲江湖.txt", "天龙八部.txt"]:
+        if file in ["倚天屠龙记.txt", "笑傲江湖.txt", "天龙八部.txt", "射雕英雄传.txt", "神雕侠侣.txt"]:
             print(file)
             paralist = []
             selected = []
@@ -50,14 +50,14 @@ if __name__ == '__main__':
             # print(len(paralist))
             paralist = list(filter(not_empty, paralist))
             # print(len(paralist))
-            selected = random.sample(paralist, 70)
+            selected = random.sample(paralist, 200)
             random.shuffle(selected)
             selected_all.extend(selected)
             # print(selected)
-            trainlist.extend(selected[0:60])
-            testlist.extend(selected[60:70])
+            trainlist.extend(selected[0:180])
+            testlist.extend(selected[180:200])
 
-    M = 210
+    M = 1000
     # print(len(selectedparalist))
     # print(selectedparalist[0])
 
@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
     test_corpus = [id2word.doc2bow(text) for text in test_texts]
 
-    lda_model = gensim.models.ldamodel.LdaModel(corpus=train_corpus, id2word=id2word, num_topics=50, random_state=100,
+    lda_model = gensim.models.ldamodel.LdaModel(corpus=train_corpus, id2word=id2word, num_topics=10, random_state=100,
                                                 update_every=1, chunksize=100, passes=10,
                                                 alpha='auto', per_word_topics=True)
 
@@ -221,21 +221,21 @@ if __name__ == '__main__':
     x = train_cla
     t = test_cla
     truth = []
-    for i in range(210):
-        if i < 180:
-            y.append(i // 60)
+    for i in range(1000):
+        if i < 900:
+            y.append(i // 90)
         else:
-            truth.append((i - 180) // 10)
+            truth.append((i - 900) // 10)
     clf.fit(x, y)
     print(y)
     pred = clf.predict(t).tolist()
     print(pred)
     print(truth)
     acc = 0.0
-    for i in range(30):
+    for i in range(100):
         if pred[i] == truth[i]:
             acc = acc + 1
-    acc = acc / 30
+    acc = acc / 100
     print(acc)
 
 
